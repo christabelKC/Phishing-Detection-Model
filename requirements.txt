@@ -1,0 +1,12 @@
+pip~=24.2
+attrs~=25.3.0
+pillow~=11.1.0
+docutils~=0.21.2
+pyarrow~=19.0.1
+numpy~=2.2.4
+pandas~=2.2.3
+tzdata~=2025.1
+scipy~=1.15.2
+cffi~=1.17.1
+PyYAML~=6.0.2
+scikit-learn~=1.6.1
