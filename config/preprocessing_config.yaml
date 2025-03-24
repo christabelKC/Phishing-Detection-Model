@@ -1,0 +1,6 @@
+# Preprocessing Configuration
+missing_values_threshold: 0.3  # Drop columns with >30% missing values
+skew_threshold: 1.0  # Log transform features with skewness > 1
+max_onehot_categories: 10  # Max categories for one-hot encoding
+test_size: 0.2  # 20% of data for testing
+random_state: 42  # For reproducibility
