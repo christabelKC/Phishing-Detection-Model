@@ -14,7 +14,12 @@ logging.basicConfig(
 )
 logger = logging.getLogger(__name__)
 
-
+"""
+Data Preprocessing Module
+This module is responsible for loading, cleaning, and preprocessing the dataset.
+It includes functions for handling missing values, outlier detection,
+feature engineering, and data splitting.
+"""
 class DataPreprocessor:
     def __init__(self, config_path="../../config/preprocessing_config.yaml"):
         self.config = self._load_config(config_path)

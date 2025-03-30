@@ -1,0 +1,16 @@
+feature_engineering:
+  interaction_features:
+    - dot_dash_ratio
+    - path_entropy
+    - query_frequency
+  scaling: true
+  poly_degree: 2
+  memory_optimization: true
+
+feature_selection:
+  correlation_threshold: 0.85
+  selection_method: xgboost
+  xgboost_params:
+    threshold: median
+    importance_type: gain
+  rfe_cv: 3
