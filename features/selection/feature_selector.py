@@ -7,6 +7,7 @@ Feature selection for phishing detection
 
 import pandas as pd
 import numpy as np
+import yaml
 from sklearn.feature_selection import (RFECV, mutual_info_classif,
                                        SelectFromModel)
 from xgboost import XGBClassifier
@@ -20,6 +21,39 @@ class PhishingFeatureSelector:
         self.config = self._load_config(config_path)
         self.selector = None
         self.selected_features = []
+
+    @staticmethod
+    def _load_config(config_path):
+        """Load and validate feature selection configuration"""
+        try:
+            with open(config_path) as f:
+                config = yaml.safe_load(f)
+
+            # Validate top-level sections
+            required_sections = ['feature_engineering', 'feature_selection']
+            for section in required_sections:
+                if section not in config:
+                    raise KeyError(f"Missing required section: {section}")
+
+            # Feature Selection validations
+            fs_config = config['feature_selection']
+            fs_required = {
+                'correlation_threshold': float,
+                'selection_method': str,
+                'xgboost_params': dict
+            }
+
+            for key, val_type in fs_required.items():
+                if key not in fs_config:
+                    raise KeyError(f"Missing feature_selection key: {key}")
+                if not isinstance(fs_config[key], val_type):
+                    raise TypeError(f"{key} should be {val_type.__name__}")
+
+            return config
+
+        except Exception as e:
+            logger.error(f"Configuration loading failed: {str(e)}")
+            raise
 
     def correlation_analysis(self, X, y, threshold=0.9):
         """Remove highly correlated features"""

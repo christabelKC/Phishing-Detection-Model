@@ -22,7 +22,7 @@ class PhishingFeatureEngineer(BaseEstimator, TransformerMixin):
         self.feature_columns = []
 
     @staticmethod
-    def _load_config(self, config_path):
+    def _load_config(config_path):
         """Load and validate feature engineering configuration"""
         try:
             with open(config_path) as f:
@@ -117,8 +117,15 @@ class PhishingFeatureEngineer(BaseEstimator, TransformerMixin):
         return X
 
     def fit(self, X, y=None):
-        """Learn scaling parameters"""
-        self.scaler.fit(X.select_dtypes(include=np.number))
+        """Learn scaling parameters after feature engineering"""
+        # Create features first
+        X_engineered = self._create_interaction_features(X)
+        X_engineered = self._create_security_features(X_engineered)
+
+        # Then fit scaler on engineered features
+        num_cols = X_engineered.select_dtypes(include=np.number).columns
+        self.scaler.fit(X_engineered[num_cols])
+
         return self
 
     def transform(self, X):

@@ -12,7 +12,7 @@ logger = logging.getLogger(__name__)
 
 
 class FeaturePipeline:
-    def __init__(self, config_path: str = "../config/feature_config.yaml"):
+    def __init__(self, config_path: str = "config/feature_config.yaml"):
         self.config = self._load_config(config_path)
         self.engineer = PhishingFeatureEngineer(config_path)
         self.selector = PhishingFeatureSelector(config_path)
@@ -89,10 +89,9 @@ class FeaturePipeline:
         logger.info(f"Saved feature artifacts to {output_dir}")
 
 
-def main():
-    # Example usage
-    from sklearn.model_selection import train_test_split
+# features/feature_pipeline.py
 
+def main():
     # Configure logging
     logging.basicConfig(
         level=logging.INFO,
@@ -100,10 +99,19 @@ def main():
     )
 
     # Load processed data
-    data_dir = "../../data/processed/structured/"
+    data_dir = "../data/processed/structured/"
+
+    # Load features from parquet
     X_train = pd.read_parquet(os.path.join(data_dir, "X_train.parquet"))
     X_test = pd.read_parquet(os.path.join(data_dir, "X_test.parquet"))
-    y_train = pd.read_csv(os.path.join(data_dir, "y_train.csv")).squeeze()
+
+    # Load targets from numpy arrays
+    y_train = np.load(os.path.join(data_dir, "y_train.npy"))
+    y_test = np.load(os.path.join(data_dir, "y_test.npy"))  # If available
+
+    # Convert to pandas Series for compatibility
+    y_train = pd.Series(y_train)
+    y_test = pd.Series(y_test) if os.path.exists(os.path.join(data_dir, "y_test.npy")) else None
 
     # Initialize pipeline
     pipeline = FeaturePipeline()
@@ -112,13 +120,14 @@ def main():
     X_train_final, X_test_final = pipeline.execute_full_pipeline(X_train, y_train, X_test)
 
     # Save processed features
-    feature_dir = "../../data/features/"
+    feature_dir = "../data/features/"
     X_train_final.to_parquet(os.path.join(feature_dir, "X_train_selected.parquet"))
-    X_test_final.to_parquet(os.path.join(feature_dir, "X_test_selected.parquet"))
+
+    if X_test_final is not None:
+        X_test_final.to_parquet(os.path.join(feature_dir, "X_test_selected.parquet"))
 
     # Save pipeline artifacts
     pipeline.save_artifacts(os.path.join(feature_dir, "metadata"))
-
 
 if __name__ == "__main__":
     main()

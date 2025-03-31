@@ -10,3 +10,4 @@ scipy~=1.15.2
 cffi~=1.17.1
 PyYAML~=6.0.2
 scikit-learn~=1.6.1
+xgboost
