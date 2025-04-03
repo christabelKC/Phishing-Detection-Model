@@ -10,4 +10,7 @@ scipy~=1.15.2
 cffi~=1.17.1
 PyYAML~=6.0.2
 scikit-learn~=1.6.1
-xgboost
+xgboost~=3.0.0
+joblib~=1.4.2
+matplotlib~=3.10.1
+seaborn~=0.13.2
